@@ -17,16 +17,16 @@ public class PlayerController : MonoBehaviour
     private AudioSource audioPlayer;
     private Rigidbody rbPlayer;
 
-    private static string playerName = "VAMPIRO X";
 
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(PlayerController.playerName);
-        animPlayer.SetBool("isRun", false);
         audioPlayer = GetComponent<AudioSource>();
-        rbPlayer    = GetComponent<Rigidbody>();
+        rbPlayer = GetComponent<Rigidbody>();
+        animPlayer.SetBool("isRun", false);
+        SetPlayerRotation();
     }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -64,15 +64,14 @@ public class PlayerController : MonoBehaviour
         else
         {
             animPlayer.SetBool("isRun", false);
+            ResetVelocities();
         }
     }
     private void RotatePlayer()
     {
-        if(Input.GetAxis("Mouse X") != 0) { 
-            cameraAxisX += Input.GetAxis("Mouse X");
-            Quaternion angulo   = Quaternion.Euler(0, cameraAxisX * speedTurn, 0);
-            transform.rotation = angulo;
-            mPlayer.transform.rotation = transform.rotation;
+        if(Input.GetAxisRaw("Mouse X") != 0) { 
+            cameraAxisX += Input.GetAxisRaw("Mouse X");
+            SetPlayerRotation();
         }
     }
     private void OnCollisionEnter(Collision collision)
@@ -95,5 +94,18 @@ public class PlayerController : MonoBehaviour
         {
             other.gameObject.GetComponent<GeneratorController>().setNewColor(Color.black);
         }
+    }
+
+    private void SetPlayerRotation()
+    {
+        Quaternion angulo = Quaternion.Euler(0, cameraAxisX * speedTurn, 0);
+        transform.rotation = angulo;
+        mPlayer.transform.rotation = transform.rotation;
+    }
+
+    private void ResetVelocities()
+    {
+        rbPlayer.velocity = Vector3.zero;
+        rbPlayer.angularVelocity = Vector3.zero;
     }
 }
