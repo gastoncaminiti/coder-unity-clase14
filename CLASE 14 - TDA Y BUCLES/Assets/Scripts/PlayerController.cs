@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
 
     private AudioSource audioPlayer;
     private Rigidbody rbPlayer;
+    private InventoryManager mgInventory;
 
 
     // Start is called before the first frame update
@@ -23,6 +24,7 @@ public class PlayerController : MonoBehaviour
     {
         audioPlayer = GetComponent<AudioSource>();
         rbPlayer = GetComponent<Rigidbody>();
+        mgInventory = GetComponent<InventoryManager>();
         animPlayer.SetBool("isRun", false);
         SetPlayerRotation();
     }
@@ -38,6 +40,22 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Space))
         {
             animPlayer.SetBool("isPunch", false);
+        }
+
+
+        if (Input.GetKeyUp(KeyCode.G) && mgInventory.InventoryOneHas())
+        {
+            UseItem();
+        }
+
+        if (Input.GetKeyUp(KeyCode.H) && mgInventory.InventoryTwoHas())
+        {
+            UseItem();
+        }
+
+        if (Input.GetKeyUp(KeyCode.J) && mgInventory.InventoryThreeHas())
+        {
+            UseItem();
         }
     }
 
@@ -94,6 +112,27 @@ public class PlayerController : MonoBehaviour
         {
             other.gameObject.GetComponent<GeneratorController>().setNewColor(Color.black);
         }
+
+        if (other.gameObject.CompareTag("Food"))
+        {
+            GameObject food = other.gameObject;
+            food.SetActive(false);
+            //mgInventory.AddInventoryOne(food);
+            //mgInventory.SeeInventoryOne();
+            //mgInventory.AddInventoryTwo(food);
+            //mgInventory.SeeInventoryTwo();
+            mgInventory.AddInventoryThree(food.name, food);
+            mgInventory.SeeInventoryThree();
+        }
+    }
+
+    private void UseItem()
+    {
+        //GameObject food = mgInventory.GetInventoryOne();
+        //GameObject food = mgInventory.GetInventoryTwo();
+        GameObject food = mgInventory.GetInventoryThree("egg");
+        food.SetActive(true);
+        food.transform.position = transform.position + new Vector3(1f,.1f,.1f);
     }
 
     private void SetPlayerRotation()
