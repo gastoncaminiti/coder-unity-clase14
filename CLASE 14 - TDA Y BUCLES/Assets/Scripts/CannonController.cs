@@ -14,7 +14,7 @@ public class CannonController : MonoBehaviour
     [SerializeField] private GameObject bulletPrefab;
 
     private bool  canShoot = true;
-
+    private bool  isActive = true;
 
 
     void Start()
@@ -25,22 +25,22 @@ public class CannonController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (canShoot)
-        {
-            RaycastCannon();
-        }
-        else
-        {
-           timerShoot += Time.deltaTime;
-        }
+        if (isActive) { 
+            if (canShoot)
+            {
+                RaycastCannon();
+            }
+            else
+            {
+               timerShoot += Time.deltaTime;
+            }
 
      
-        if(timerShoot > shootCooldown)
-        {
-            canShoot = true;
+            if(timerShoot > shootCooldown)
+            {
+                canShoot = true;
+            }
         }
-
-
     }
 
 
@@ -65,11 +65,16 @@ public class CannonController : MonoBehaviour
     private void OnDrawGizmos()
     {
 
-        if (canShoot) { 
+        if (canShoot && isActive) { 
             Gizmos.color = Color.blue;
             Vector3 direction = shootOrigen.transform.TransformDirection(Vector3.forward) * distanceRay;
             Gizmos.DrawRay(shootOrigen.transform.position, direction);
         }
 
+    }
+
+    public void SetActiveCannon(bool status)
+    {
+        isActive = status;
     }
 }
